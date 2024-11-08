@@ -17,7 +17,7 @@ class LoginController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        return $result = $this->loginService->login($request->validated());
+        //return $result = $this->loginService->login($request->validated());
         try {
             
             return response()->json([
@@ -32,7 +32,7 @@ class LoginController extends Controller
             ], 500);
         }
     }
-    
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
