@@ -73,7 +73,7 @@ Steps 3 : Set Up Environment Variables
 Steps 5 : migrate the databse
 
 ```bash
-  php artisan db:seed --class=RolesAndPermissionsSeeder
+  php artisan migrate
 
 ```
 
