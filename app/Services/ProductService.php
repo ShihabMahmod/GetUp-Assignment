@@ -17,7 +17,7 @@ class ProductService{
 
     public function edit($id)
     {
-        return  Product::select('name','description','price','stock')->findOrFail($id);
+        return  Product::select('category_id','name','description','price','stock')->findOrFail($id);
     }
 
     public function update(array $data,int $id)

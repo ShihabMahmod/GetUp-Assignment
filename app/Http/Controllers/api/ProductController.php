@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ProductService;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Configuration\Middleware;
 
 class ProductController extends Controller
 {
@@ -19,11 +21,14 @@ class ProductController extends Controller
 
     public function index()
     {
+        Gate::authorize('viewAny', Product::class);
         return $this->productService->index();
     }
     
     public function store(ProductRequest $request)
     {
+    
+        Gate::authorize('create', Product::class);
         try {
             $products = $this->productService->store($request->validated());
             return response()->json([
@@ -37,10 +42,11 @@ class ProductController extends Controller
             ], 500);
         }
     }
-    public function show(string $id)
+    public function edit(string $id)
     {
-       
         $product = $this->productService->edit($id);
+        Gate::authorize('view', $product);
+
         if(!$product){
             return response()->json([
                 'message' => 'Product not found!',
@@ -52,11 +58,11 @@ class ProductController extends Controller
     }
     public function update(ProductRequest $request, string $id)
     {
-       
         try {
-            $products = $this->productService->update($request->validated(), $id);
+            $product = $this->productService->update($request->validated(), $id);
+            Gate::authorize('update', $product);
             return response()->json([
-                'products' => $products,
+                'products' => $product,
             ], 200);
     
         } catch (\Exception $e) {
@@ -68,10 +74,14 @@ class ProductController extends Controller
     }
     public function destroy(string $id)
     {
-        $result = $this->productService->destroy($id);
-        if(!$result){
-            return response()->json(['message' => 'Product not found!'],404);
-        }
-        return response()->json(['message' => 'Product deleted successfully!'],200);
+            $product = $this->productService->edit($id);
+            Gate::authorize('delete', $product);
+            $result = $this->productService->destroy($id);
+           
+            if(!$result){
+                return response()->json(['message' => 'Product not found!'],404);
+            }
+            return response()->json(['message' => 'Product deleted successfully!'],200);
+
     }
 }

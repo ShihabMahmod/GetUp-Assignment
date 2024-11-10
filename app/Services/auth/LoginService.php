@@ -23,6 +23,8 @@ class LoginService{
             ];
         }else{
             return [
+                'user' => null,
+                'token' => null,
                 'message' => 'Email Not Found',
             ];
         }    

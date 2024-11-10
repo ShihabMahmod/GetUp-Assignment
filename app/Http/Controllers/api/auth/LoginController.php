@@ -17,9 +17,14 @@ class LoginController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        //return $result = $this->loginService->login($request->validated());
         try {
-            
+
+            $result = $this->loginService->login($request->validated());
+            if(!$result['user']){
+                return response()->json([
+                    'message' => $result['message'],
+                ], 200);
+            }
             return response()->json([
                 'user' => $result['user'],
                 'token' => $result['token']
